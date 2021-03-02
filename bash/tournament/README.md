@@ -1,3 +1,7 @@
+# bboykov notes
+
+[My notes](MYNOTES.md)
+
 # Tournament
 
 Tally the results of a small football competition.
