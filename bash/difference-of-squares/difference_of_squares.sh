@@ -10,7 +10,7 @@ die() {
 square_of_sum() {
   number=$1
   sum=0
-  for ((i = 1; i < number + 1; i++)); do
+  for ((i = 1; i <= number; i++)); do
     ((sum += i))
   done
 
@@ -21,7 +21,7 @@ sum_of_squares() {
   number=$1
 
   sum=0
-  for ((i = 1; i < number + 1; i++)); do
+  for ((i = 1; i <= number; i++)); do
     powed="$((i ** 2))"
     ((sum += powed))
   done
@@ -46,14 +46,8 @@ main() {
   number=$2
 
   case "${mode}" in
-    square_of_sum)
-      square_of_sum "${number}"
-      ;;
-    sum_of_squares)
-      sum_of_squares "${number}"
-      ;;
-    difference)
-      difference "${number}"
+    square_of_sum | sum_of_squares | difference)
+      "${mode}" "${number}"
       ;;
     *)
       die "Unknown mode"
