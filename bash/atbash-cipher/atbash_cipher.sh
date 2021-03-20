@@ -2,40 +2,46 @@
 
 set -euo pipefail
 
-latin_alphabet="abcdefghijklmnopqrstuvwxyz"
-
 die() {
   echo "$*" >&2
   exit 1
 }
 
+transpose_char() {
+  local alphabet="abcdefghijklmnopqrstuvwxyz"
+  local char=$1
+
+  for ((char_position = 0; char_position < ${#alphabet}; char_position++)); do
+    if [[ ! ${char} =~ [[:alpha:]] ]]; then
+      char_transposed="${char}"
+    elif [[ ${char} == "${alphabet:$char_position:1}" ]]; then
+      char_transposed="${alphabet:((-$char_position - 1)):1}"
+    fi
+  done
+
+  echo "${converted_char}"
+
+}
+
 encode() {
   local string=$1
   local encoded_string=""
-  local letter_counter=0
+  local char_counter=0
 
   for ((i = 0; i < ${#string}; i++)); do
 
-    for ((letter_position = 0; letter_position < ${#latin_alphabet}; letter_position++)); do
-      plain_letter=${string:$i:1}
-      if [[ ! ${plain_letter} =~ [[:alpha:]] ]]; then
-        encoded_letter="${plain_letter}"
-      elif [[ ${plain_letter} == "${latin_alphabet:$letter_position:1}" ]]; then
-        encoded_letter="${latin_alphabet:((-$letter_position - 1)):1}"
-      fi
-    done
+    encoded_char=$(transpose_char "${string:$i:1}")
 
-    if ((letter_counter == 5)); then
+    if ((char_counter == 5)); then
       encoded_string="${encoded_string} "
-      letter_counter=0
+      char_counter=0
     fi
 
-    encoded_string="${encoded_string}${encoded_letter}"
-    ((letter_counter += 1))
+    encoded_string="${encoded_string}${encoded_char}"
+    ((char_counter += 1))
   done
 
   echo "${encoded_string}"
-
 }
 
 decode() {
@@ -44,20 +50,12 @@ decode() {
 
   for ((i = 0; i < ${#string}; i++)); do
 
-    for ((letter_position = 0; letter_position < ${#latin_alphabet}; letter_position++)); do
-      encoded_letter=${string:$i:1}
-      if [[ ! ${encoded_letter} =~ [[:alpha:]] ]]; then
-        decoded_letter="${encoded_letter}"
-      elif [[ ${encoded_letter} == "${latin_alphabet:$letter_position:1}" ]]; then
-        decoded_letter="${latin_alphabet:((-$letter_position - 1)):1}"
-      fi
-    done
+    decoded_char=$(transpose_char "${string:$i:1}")
 
-    decoded_string="${decoded_string}${decoded_letter}"
+    decoded_string="${decoded_string}${decoded_char}"
   done
 
   echo "${decoded_string}"
-
 }
 
 main() {
