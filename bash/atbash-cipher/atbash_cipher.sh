@@ -33,11 +33,11 @@ encode() {
     encoded_char=$(transpose_char "${string:$i:1}")
 
     if ((char_counter == 5)); then
-      encoded_string="${encoded_string} "
+      encoded_string+=" "
       char_counter=0
     fi
 
-    encoded_string="${encoded_string}${encoded_char}"
+    encoded_string+="${encoded_char}"
     ((char_counter += 1))
   done
 
@@ -52,7 +52,7 @@ decode() {
 
     decoded_char=$(transpose_char "${string:$i:1}")
 
-    decoded_string="${decoded_string}${decoded_char}"
+    decoded_string+="${decoded_char}"
   done
 
   echo "${decoded_string}"
@@ -64,14 +64,10 @@ main() {
   fi
 
   local mode=$1
-  local raw_string=${2}
+  local raw_string=${2//[^[:alnum:]]/}
   local string
 
-  raw_string="${raw_string,,}"
-  raw_string="${raw_string// /}"
-  raw_string=$(echo "$raw_string" | tr -d '[:punct:]')
-
-  string="${raw_string}"
+  string="${raw_string,,}"
 
   case "${mode}" in
     encode | decode)
