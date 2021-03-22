@@ -23,39 +23,37 @@ transpose_char() {
 
 }
 
-encode() {
-  local string=$1
-  local encoded_string=""
+transpose_string() {
+  local mode=$1
+  local string=$2
+  local transpose_string=""
   local char_counter=0
 
-  for ((i = 0; i < ${#string}; i++)); do
+  local alphabet="abcdefghijklmnopqrstuvwxyz"
 
-    encoded_char=$(transpose_char "${string:$i:1}")
+  for ((i = 0; i < ${#string}; i++)); do
+    transpose_char="${string:$i:1}"
+
+    for ((char_position = 0; char_position < ${#alphabet}; char_position++)); do
+      if [[ ! ${transpose_char} =~ [[:alpha:]] ]]; then
+        char_transposed="${transpose_char}"
+      elif [[ ${transpose_char} == "${alphabet:$char_position:1}" ]]; then
+        char_transposed="${alphabet:((-$char_position - 1)):1}"
+      fi
+    done
 
     if ((char_counter == 5)); then
-      encoded_string+=" "
-      char_counter=0
+      transpose_string+=" "
+      char_counter=1
+    elif [[ "${mode}" == "encode" ]]; then
+      ((char_counter += 1))
     fi
 
-    encoded_string+="${encoded_char}"
-    ((char_counter += 1))
+    transpose_string+="${char_transposed}"
+
   done
 
-  echo "${encoded_string}"
-}
-
-decode() {
-  local string=$1
-  local decoded_string=""
-
-  for ((i = 0; i < ${#string}; i++)); do
-
-    decoded_char=$(transpose_char "${string:$i:1}")
-
-    decoded_string+="${decoded_char}"
-  done
-
-  echo "${decoded_string}"
+  echo "${transpose_string}"
 }
 
 main() {
@@ -71,7 +69,7 @@ main() {
 
   case "${mode}" in
     encode | decode)
-      "${mode}" "${string}"
+      transpose_string "${mode}" "${string}"
       ;;
     *)
       die "Unknown mode"
