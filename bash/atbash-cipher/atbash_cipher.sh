@@ -19,7 +19,7 @@ transpose_char() {
     fi
   done
 
-  echo "${converted_char}"
+  echo "${char_transposed}"
 
 }
 
