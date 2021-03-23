@@ -62,10 +62,8 @@ main() {
   fi
 
   local mode=$1
-  local raw_string=${2//[^[:alnum:]]/}
+  local -l string=${2//[^[:alnum:]]/}
   local string
-
-  string="${raw_string,,}"
 
   case "${mode}" in
     encode | decode)
