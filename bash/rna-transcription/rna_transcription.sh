@@ -43,7 +43,7 @@ using_assosiative_array(){
   for (( i=0 ; i < ${#input_string} ; i++ )); do
     input_char="${input_string:$i:1}"
 
-    if [[ ! "${!strand_map[*]}" == *"${input_char}"* ]]; then
+    if [[ ! -v strand_map[$input_char] ]]; then
       echo "Invalid nucleotide detected."
       exit 1
     else
